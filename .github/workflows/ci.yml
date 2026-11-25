@@ -10,8 +10,8 @@ jobs:
     name: bit-exact RTL against the models
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Install Icarus Verilog and the Python packages
@@ -27,8 +27,8 @@ jobs:
     name: Yosys synthesis smoke
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Install Yosys and the Python packages

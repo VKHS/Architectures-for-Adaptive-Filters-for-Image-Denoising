@@ -34,12 +34,17 @@ SMOKE = [("serial", 8, {}, 1), ("folded", 8, dict(P=2), 4), ("df", 8, {}, 16), (
 
 
 def smoke():
-    """Synthesis check for CI: every engine maps; the DSP48E1 count is compared with the multiplier count."""
+    """Synthesis check for CI: every engine maps to LUTs and flip-flops; the DSP48E1 count is compared with the
+    multiplier count (reported, not enforced, since DSP inference may differ between Yosys versions)."""
+    ok = True
     for eng, L, kw, mult in SMOKE:
         r = synth.synth(f"lms_{eng}", synth.engine_files(eng), dict(L=L, **kw), tag=f"smoke_{eng}")
-        note = "as expected" if r["DSP48E1"] == mult else f"expected {mult} (Yosys version?)"
+        note = "as expected" if r["DSP48E1"] == mult else f"expected {mult}"
         print(f"lms_{eng:9s} L={L}: DSP48E1 {r['DSP48E1']:3d} ({note}), LUT {r['LUT']}, FF {r['FF']}", flush=True)
-    return 0
+        ok &= r["LUT"] > 0 and r["FF"] > 0
+    if not ok:
+        print("an engine mapped to no LUTs or flip-flops: the netlist or the stat parser is wrong")
+    return 0 if ok else 1
 
 
 def main():

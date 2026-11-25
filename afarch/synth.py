@@ -53,9 +53,12 @@ def synth(top, files, params=None, tag=None, timeout=3600, flatten=True, extra=(
 
 
 def parse_stat(text):
+    """Cell counts from Yosys `stat`: '  12   LUT2' (recent versions) or '  LUT2   12' (0.3x and older)."""
     cells = {}
-    for m in re.finditer(r"^\s+(\d+)\s+(\w+)\s*$", text, re.M):
+    for m in re.finditer(r"^\s+(\d+)\s+([A-Za-z_$][\w$]*)\s*$", text, re.M):
         cells[m.group(2)] = cells.get(m.group(2), 0) + int(m.group(1))
+    for m in re.finditer(r"^\s+([A-Za-z_$][\w$]*)\s+(\d+)\s*$", text, re.M):
+        cells[m.group(1)] = cells.get(m.group(1), 0) + int(m.group(2))
     out = {g: sum(cells.get(c, 0) for c in names) for g, names in GROUPS.items()}
     out["cells"] = cells
     return out
