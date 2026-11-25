@@ -1,0 +1,343 @@
+{
+ "cases": [
+  {
+   "case": "de_D_serial",
+   "scenario": "D",
+   "engine": "serial",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "de_D_folded",
+   "scenario": "D",
+   "engine": "folded",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "de_D_df",
+   "scenario": "D",
+   "engine": "df",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "de_D_systolic",
+   "scenario": "D",
+   "engine": "systolic",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "de_D_rowblock",
+   "scenario": "D",
+   "engine": "rowblock",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "de_D_da",
+   "scenario": "D",
+   "engine": "da",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "de_Dg_serial",
+   "scenario": "D gated",
+   "engine": "serial",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 3,
+   "pixels": 768,
+   "outputs": 2304,
+   "match": true,
+   "flagged": 28
+  },
+  {
+   "case": "de_Dg_df",
+   "scenario": "D gated",
+   "engine": "df",
+   "R": 2,
+   "HOLE": 0,
+   "L": 24,
+   "passes": 3,
+   "pixels": 768,
+   "outputs": 2304,
+   "match": true,
+   "flagged": 28
+  },
+  {
+   "case": "de_E_folded_hole1",
+   "scenario": "E",
+   "engine": "folded",
+   "R": 3,
+   "HOLE": 1,
+   "L": 40,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "de_E_systolic_hole1",
+   "scenario": "E",
+   "engine": "systolic",
+   "R": 3,
+   "HOLE": 1,
+   "L": 40,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true,
+   "flagged": 0
+  },
+  {
+   "case": "c_serial",
+   "scenario": "C",
+   "engine": "serial",
+   "L": 16,
+   "delay": 6,
+   "pixels": 384,
+   "outputs": 384,
+   "match": true
+  },
+  {
+   "case": "c_folded",
+   "scenario": "C",
+   "engine": "folded",
+   "L": 16,
+   "delay": 6,
+   "pixels": 384,
+   "outputs": 384,
+   "match": true
+  },
+  {
+   "case": "c_df",
+   "scenario": "C",
+   "engine": "df",
+   "L": 16,
+   "delay": 6,
+   "pixels": 384,
+   "outputs": 384,
+   "match": true
+  },
+  {
+   "case": "c_systolic",
+   "scenario": "C",
+   "engine": "systolic",
+   "L": 16,
+   "delay": 6,
+   "pixels": 384,
+   "outputs": 384,
+   "match": true
+  },
+  {
+   "case": "c_rowblock",
+   "scenario": "C",
+   "engine": "rowblock",
+   "L": 16,
+   "delay": 6,
+   "pixels": 384,
+   "outputs": 384,
+   "match": true
+  },
+  {
+   "case": "c_da",
+   "scenario": "C",
+   "engine": "da",
+   "L": 16,
+   "delay": 6,
+   "pixels": 384,
+   "outputs": 384,
+   "match": true
+  },
+  {
+   "case": "a_serial",
+   "scenario": "A",
+   "engine": "serial",
+   "L": 4,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true
+  },
+  {
+   "case": "a_folded",
+   "scenario": "A",
+   "engine": "folded",
+   "L": 4,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true
+  },
+  {
+   "case": "a_df",
+   "scenario": "A",
+   "engine": "df",
+   "L": 4,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true
+  },
+  {
+   "case": "a_systolic",
+   "scenario": "A",
+   "engine": "systolic",
+   "L": 4,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true
+  },
+  {
+   "case": "a_rowblock",
+   "scenario": "A",
+   "engine": "rowblock",
+   "L": 4,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true
+  },
+  {
+   "case": "a_da",
+   "scenario": "A",
+   "engine": "da",
+   "L": 4,
+   "passes": 2,
+   "pixels": 768,
+   "outputs": 1536,
+   "match": true
+  },
+  {
+   "case": "b_lms",
+   "scenario": "B",
+   "engine": "bias",
+   "mode": "lms",
+   "pixels": 768,
+   "outputs": 768,
+   "match": true
+  },
+  {
+   "case": "b_sign",
+   "scenario": "B",
+   "engine": "bias",
+   "mode": "sign",
+   "pixels": 768,
+   "outputs": 768,
+   "match": true
+  },
+  {
+   "case": "b_gated",
+   "scenario": "B",
+   "engine": "bias",
+   "mode": "gated",
+   "pixels": 768,
+   "outputs": 768,
+   "match": true
+  },
+  {
+   "case": "f_ob_cal_serial",
+   "scenario": "F",
+   "engine": "serial",
+   "variant": "ob_cal",
+   "pixels": 1200,
+   "outputs": 1200,
+   "match": true
+  },
+  {
+   "case": "f_ob_cal_df",
+   "scenario": "F",
+   "engine": "df",
+   "variant": "ob_cal",
+   "pixels": 1200,
+   "outputs": 1200,
+   "match": true
+  },
+  {
+   "case": "f_online_serial",
+   "scenario": "F",
+   "engine": "serial",
+   "variant": "online",
+   "pixels": 400,
+   "outputs": 400,
+   "match": true
+  },
+  {
+   "case": "f_online_rowblock",
+   "scenario": "F",
+   "engine": "rowblock",
+   "variant": "online",
+   "pixels": 400,
+   "outputs": 400,
+   "match": true
+  },
+  {
+   "case": "f_channel_systolic",
+   "scenario": "F",
+   "engine": "systolic",
+   "variant": "channel",
+   "pixels": 800,
+   "outputs": 800,
+   "match": true
+  },
+  {
+   "case": "median3x3",
+   "scenario": "baseline",
+   "engine": "median3x3",
+   "pixels": 768,
+   "outputs": 768,
+   "match": true
+  },
+  {
+   "case": "switching_median",
+   "scenario": "baseline",
+   "engine": "median3x3-switching",
+   "pixels": 768,
+   "outputs": 768,
+   "match": true
+  }
+ ],
+ "all_pass": true
+}

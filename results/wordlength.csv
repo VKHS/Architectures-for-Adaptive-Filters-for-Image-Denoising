@@ -1,0 +1,20 @@
+storage,FW,WW,S,psnr
+register,10,14,8,26.968
+accumulator,10,14,8,27.145
+register,12,16,8,27.121
+accumulator,12,16,8,27.145
+register,14,18,8,27.141
+accumulator,14,18,8,27.145
+register,16,20,8,27.146
+accumulator,16,20,8,27.145
+register,18,22,8,27.145
+accumulator,18,22,8,27.145
+register,20,24,8,27.145
+accumulator,20,24,8,27.145
+register,22,26,8,27.145
+accumulator,22,26,8,27.145
+"accumulator, data FD = 8",16,20,8,27.143
+"accumulator, data FD = 10",18,22,8,27.145
+"accumulator, data FD = 12",20,24,8,27.145
+"accumulator, data FD = 14",22,26,8,27.145
+float reference,,,,27.152

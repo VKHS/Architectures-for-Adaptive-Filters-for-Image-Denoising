@@ -1,0 +1,40 @@
+name: RTL verification
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rtl:
+    name: bit-exact RTL against the models
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Icarus Verilog and the Python packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+          pip install -r requirements.txt
+      - name: Engines (24 cases, 8 initiation intervals)
+        run: python sim/test_engines.py
+      - name: Scenario tops (32 cases)
+        run: python sim/test_scenarios.py
+  synthesis:
+    name: Yosys synthesis smoke
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Yosys and the Python packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yosys
+          pip install -r requirements.txt
+      - name: Every engine through synth_xilinx
+        run: python syn/synth_engines.py --smoke

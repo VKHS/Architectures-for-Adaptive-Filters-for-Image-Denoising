@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: software
+title: "Architectures for Adaptive Filters for Image Denoising"
+abstract: >-
+  FPGA architectures for the six LMS adaptive-filter scenarios of image denoising (adaptive notch,
+  bias canceller, canceller without a reference, self-tuning blind-spot predictor, adaptive line
+  enhancer and reference-sensor canceller). The LMS loop is analysed from its iteration bound;
+  six engines (serial, folded, direct-form and systolic delayed LMS, row-block LMS and distributed
+  arithmetic) are derived, with the stability conditions of delayed and block LMS on images, a
+  stall-free fixed-point weight accumulator, streaming front ends with reflected borders, and
+  Verilog RTL that reproduces bit-accurate models word for word. Yosys resource counts and six
+  application examples complete it.
+authors:
+  - family-names: "Khalili Sadaghiani"
+    given-names: "Abdolvahab"
+    orcid: "https://orcid.org/0000-0003-4870-2768"
+    affiliation: "Linköping University"
+repository-code: "https://github.com/VKHS/Architectures-for-Adaptive-Filters-for-Image-Denoising"
+url: "https://github.com/VKHS/Architectures-for-Adaptive-Filters-for-Image-Denoising"
+license: MIT
+date-released: "2026-11-25"
+keywords:
+  - adaptive filtering
+  - LMS
+  - delayed LMS
+  - block LMS
+  - FPGA
+  - systolic array
+  - distributed arithmetic
+  - image denoising
+  - fixed-point arithmetic
+  - Verilog
+references:
+  - type: software
+    title: "Adaptive Filters for Image Denoising"
+    authors:
+      - family-names: "Khalili Sadaghiani"
+        given-names: "Abdolvahab"
+        orcid: "https://orcid.org/0000-0003-4870-2768"
+    url: "https://github.com/VKHS/Adaptive-Filters-for-Image-Denoising"

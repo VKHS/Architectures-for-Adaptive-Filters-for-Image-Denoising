@@ -1,0 +1,13 @@
+scenario,storage,FW,WW,S,psnr
+A,register,16,20,17,30.752
+A,accumulator,16,20,17,35.327
+A,register,18,22,17,34.473
+A,accumulator,18,22,17,35.327
+A,register,20,24,17,35.215
+A,accumulator,20,24,17,35.327
+A,register,22,26,17,35.324
+A,accumulator,22,26,17,35.327
+A,register,24,28,17,35.326
+A,accumulator,24,28,17,35.327
+A,register,26,30,17,35.326
+A,accumulator,26,30,17,35.327

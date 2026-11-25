@@ -1,0 +1,10 @@
+build/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.vcd
+*.fst
+.Xil/
+vivado*.jou
+vivado*.log
+results/examples_images.npz
