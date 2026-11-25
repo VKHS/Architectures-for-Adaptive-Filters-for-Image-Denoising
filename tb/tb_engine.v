@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// Generic engine testbench. Replays a step file written by sim/run_tests.py and logs every output, every
+// Generic engine testbench. Replays a step file written by sim/test_engines.py and logs every output, every
 // accepted sample and its clock cycle; the Python side compares the log with the bit-accurate model.
 //
 // Step file, one line per step:   valid shift drain adapt last d p x(hex, L*WD bits, tap 0 in the LSBs)

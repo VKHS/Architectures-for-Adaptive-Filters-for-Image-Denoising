@@ -770,35 +770,102 @@ def schedules():
 
 
 def verification():
-    d = HwDiagram(13.6, 3.9)
-    d.title("Verification: three links, each checked against the next")
-    d.subtitle("Images are scored on the floating-point algorithm and on the bit-accurate models; the RTL must "
-               "reproduce the models word for word on random step streams.")
-    y = 2.35
-    fl = d.block(1.85, y, 3.0, 1.1, "floating point\nafarch/reference.py\nthe algorithms of the companion repository",
-                 fs=7.8, fill=NEUTRAL)
-    md = d.block(6.6, y, 3.2, 1.1, "bit-accurate models\nafarch/fxp.py, engines.py, frontends.py, scenarios.py\n"
-                 "one model per class: exact, delayed, block", fs=7.8, fill=BLUE_LIGHT, edge=BLUE)
-    rt = d.block(11.45, y, 3.0, 1.1, "RTL\nrtl/engines, rtl/scenarios, rtl/baselines\nVerilog-2005", fs=7.8,
+    d = HwDiagram(14.4, 5.6)
+    d.title("Verification: one model, two implementations, every output word compared")
+    d.subtitle("Images are scored on the floating-point algorithm and on the bit-accurate models; the Verilog tops and the "
+               "HLS C++ tops must reproduce the models word for word.")
+    y = 3.05
+    fl = d.block(1.75, y, 2.8, 1.15, "floating point\nafarch/reference.py\nthe algorithms of the\ncompanion repository",
+                 fs=7.6, fill=NEUTRAL)
+    md = d.block(6.05, y, 3.3, 1.15, "bit-accurate models\nafarch/fxp.py, engines.py,\nfrontends.py, scenarios.py\n"
+                 "one model per class: exact, delayed, block", fs=7.6, fill=BLUE_LIGHT, edge=BLUE)
+    rt = d.block(12.05, 3.85, 3.2, 0.95, "RTL, Verilog-2005\nrtl/engines, rtl/scenarios, rtl/baselines", fs=7.6,
                  fill=ORANGE_LIGHT, edge=ORANGE)
+    hl = d.block(12.05, 2.2, 3.2, 0.95, "HLS C++\nhls/include/afhls, hls/src (Vitis HLS style)", fs=7.6,
+                 fill=AQUA_LIGHT, edge=AQUA)
     d.wire([fl["r"], md["l"]], color=INK2)
-    d.text(4.18, y + 0.2, "same scenes", fs=7, color=INK2)
-    d.text(4.18, y - 0.22, "PSNR, SSIM", fs=7, color=INK2)
-    d.wire([(md["r"][0], y + 0.2), (rt["l"][0], y + 0.2)], color=INK)
-    d.wire([(rt["l"][0], y - 0.2), (md["r"][0], y - 0.2)], color=INK)
-    d.text(9.07, y + 0.42, "random step streams", fs=7, color=INK)
-    ex = d.block(6.6, 0.72, 3.2, 0.62, "experiments/*.py: delay, step, word length,\napplication examples (whole images)",
-                 fs=7.2, fill="white")
+    d.text(3.92, y + 0.2, "same scenes", fs=7, color=INK2)
+    d.text(3.92, y - 0.22, "PSNR, SSIM", fs=7, color=INK2)
+    d.wire([(md["r"][0], y + 0.25), (9.15, y + 0.25), (9.15, 3.95), (rt["l"][0], 3.95)], color=INK)
+    d.wire([(rt["l"][0], 3.72), (9.35, 3.72), (9.35, y + 0.1), (md["r"][0], y + 0.1)], color=INK)
+    d.wire([(md["r"][0], y - 0.12), (9.35, y - 0.12), (9.35, 2.36), (hl["l"][0], 2.36)], color=INK)
+    d.wire([(hl["l"][0], 2.1), (9.15, 2.1), (9.15, y - 0.27), (md["r"][0], y - 0.27)], color=INK)
+    d.note(9.25, 4.3, "Icarus Verilog -g2005 -Wall", fs=7.0, color=INK2)
+    d.note(9.25, 1.95, "g++ C simulation:\nint64 or ap_int<W>", fs=7.0, color=INK2)
+    d.text(10.43, y + 0.02, "every output\nword equal", fs=7.2, color=RED)
+    ex = d.block(6.05, 0.95, 3.3, 0.75, "experiments/*.py: delay, step, word length,\n18 application examples, "
+                 "algorithm figures", fs=7.0, fill="white")
     d.wire([md["b"], ex["t"]], color=INK2, lw=1.0)
-    ys = d.block(11.45, 0.72, 3.0, 0.62, "Yosys synth_xilinx -family xc7:\nDSP48E1, LUT, FF, SRL, RAM counts", fs=7.2,
-                 fill="white")
-    d.wire([rt["b"], ys["t"]], color=INK2, lw=1.0)
-    tb = d.block(9.07, 0.95, 1.5, 0.55, "Icarus Verilog\n-g2005 -Wall", fs=7.0, fill="white")
-    d.wire([(9.07, y - 0.2), tb["t"]], color=INK2, lw=1.0, head=False)
-    d.text(9.07, 0.45, "every output word equal", fs=7.2, color=RED)
-    d.note(0.3, 1.2, "sim/test_engines.py: 24 cases + 8 measured II\nsim/test_scenarios.py: 32 cases\n"
-           "random rows, idle cycles, drains, pre-roll,\nfull-scale and saturating inputs", fs=7.0)
+    ys = d.block(12.05, 5.0, 3.2, 0.5, "Yosys synth_xilinx: DSP, LUT, FF, SRL, RAM", fs=7.0, fill="white")
+    d.wire([rt["t"], ys["b"]], color=INK2, lw=1.0)
+    vh = d.block(12.05, 0.95, 3.2, 0.75, "Vitis HLS: csim, csynth, cosim, export\nhls/scripts/run_vitis_hls.tcl",
+                 fs=7.0, fill="white")
+    d.wire([hl["b"], vh["t"]], color=INK2, lw=1.0)
+    d.note(0.3, 2.1, "sim/test_engines.py   24 engine cases + 8 measured II\n"
+           "sim/test_scenarios.py   32 scenario-top cases\n"
+           "smoke/smoke.py   17 cases, A to F, RTL and HLS\n"
+           "experiments/examples_hw.py   18 examples:\n"
+           "   HLS on the whole frame, RTL on the frame,\n"
+           "   a strip (C) or a tile (D, E)", fs=7.0)
     save(d, "verification.png")
+
+
+def hls_structure():
+    d = HwDiagram(14.6, 7.3)
+    d.title("HLS C++: the three algorithmic classes as templates, the scenario tops as streams")
+    d.subtitle("Every signal has the width of its RTL counterpart (ap_int<W>); every narrowing goes through sat<W>() or "
+               "narrow<W>(), so 64-bit C simulation and ap_int give the same words as the models.")
+    # headers
+    hx, hw_ = 1.75, 2.9
+    hdr = [("types.h", "sint<W>, sat<W>, narrow<W>\nap_int or int64 (AFHLS_AP_TYPES)"),
+           ("arith.h", "Fxp<S, RULE, LEAK>: the arithmetic\ncontract; Gate; ErrUnit"),
+           ("engines.h", "exact_step, delayed_step,\ndelayed_step_tdl, block_step"),
+           ("engine_select.h", "ENGINE 0..5 -> class, D,\nstate arrays and their pragmas")]
+    d.text(hx, 5.95, "hls/include/afhls/", fs=8, color=INK2)
+    for k, (n, t) in enumerate(hdr):
+        yy = 5.35 - k * 1.05
+        d.block(hx, yy, hw_, 0.85, f"{n}\n{t}", fs=7.0, fill="white")
+    # classes
+    cx = 6.4
+    d.text(cx, 5.95, "the three classes (engines.h)", fs=8, color=INK2)
+    cls = [(BLUE, BLUE_LIGHT, "exact LMS  (ENGINE 0, 1)",
+            "one pass per pixel: FUSED loop over ceil(L/P)\nPIPELINE II=1, P lanes UNROLL; the pending\n"
+            "update of n-1 is applied in the same pass"),
+           (ORANGE, ORANGE_LIGHT, "delayed LMS  (ENGINE 2, 3)",
+            "one pixel per clock: PIPELINE II=1\nL filter + L update multipliers; a D-slot\n"
+            "shift register holds (adapt, e, taps)"),
+           (AQUA, AQUA_LIGHT, "block LMS  (ENGINE 4, 5)",
+            "one pixel per clock: PIPELINE II=1\nweights frozen along the row, G[L] sums\n"
+            "the gradients, the row's last pixel commits")]
+    for k, (ec, fc, h, t) in enumerate(cls):
+        yy = 5.1 - k * 1.45
+        d.block(cx, yy, 4.0, 1.2, f"{h}\n{t}", fs=7.1, fill=fc, edge=ec)
+    # tops
+    tx = 11.75
+    d.text(tx, 5.95, "scenario tops (hls/src), AXI4-Stream + AXI4-Lite", fs=8, color=INK2)
+    tops = [("scen_a_top", "phase accumulators, a cos ROM per harmonic"),
+            ("scen_b_top", "bias loop, no multiplier"),
+            ("scen_c_top", "Gaussian high band, tapped delay line"),
+            ("scen_de_top", "2R+2 line buffers, reflected window"),
+            ("scen_f_top", "OB mean, leave-one-out, modes 0/1/2")]
+    for k, (n, t) in enumerate(tops):
+        yy = 5.4 - k * 0.82
+        d.block(tx, yy, 4.6, 0.66, f"{n}: {t}", fs=7.1, fill="white")
+    d.region(hx - hw_ / 2 - 0.12, 1.45, hw_ + 0.24, 4.4, "", color=MUTED)
+    d.region(cx - 2.12, 1.45, 4.24, 4.4, "", color=MUTED)
+    d.region(tx - 2.42, 1.45, 4.84, 4.4, "", color=MUTED)
+    d.wire([(hx + hw_ / 2 + 0.12, 3.72), (cx - 2.12, 3.72)], color=INK2, lw=1.4)
+    d.text((hx + hw_ / 2 + cx - 2.0) / 2, 3.95, "included by", fs=7, color=INK2)
+    d.wire([(cx + 2.12, 3.72), (tx - 2.42, 3.72)], color=INK2, lw=1.4)
+    d.text((cx + 2.12 + tx - 2.42) / 2, 4.0, "ENGINE\nselects one", fs=7, color=INK2)
+    # flows
+    fy = 0.75
+    d.block(4.0, fy, 6.6, 0.8, "C simulation: hls/tb/tb_scen_*.cpp + hls/csim/hls_stream.h, g++ -std=c++14\n"
+            "smoke/smoke.py (every scenario), experiments/examples_hw.py (every example, whole frames)", fs=7.1,
+            fill=NEUTRAL)
+    d.block(11.1, fy, 6.0, 0.8, "Vitis HLS: hls/scripts/run_vitis_hls.tcl <case> csim | syn | cosim | export\n"
+            "smoke/run_vitis.sh: every smoke case, co-simulation compared word for word", fs=7.1, fill=NEUTRAL)
+    save(d, "hls_structure.png")
 
 
 def architecture_map():

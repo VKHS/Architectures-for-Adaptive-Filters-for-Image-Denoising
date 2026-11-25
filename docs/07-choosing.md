@@ -47,12 +47,12 @@ and the choice among them is the delay and LUT trade-off of chapter 6.
 ## 7.3 When not to use an LMS engine
 
 * **Unknown or drifting interference frequency, a few lines:** the A4 lattice notch tracks the frequency with one
-  coefficient and 5 multipliers ([A](scenarios/A.md#a4-an-iir-notch-that-finds-the-frequency-itself)); C with 128
+  coefficient and 5 multipliers ([A](scenarios/A.md#25-when-the-frequency-is-unknown-the-lattice-notch-a4)); C with 128
   taps is the general but expensive answer.
 * **A reference of the constant 1:** the bias engine of B has no multiplier at all.
 * **Impulses with no multiplier budget:** the switching median (864 LUTs, no DSP) is within 0.9 dB of the gated
   predictor in PSNR on fine texture and slightly ahead in SSIM; it is the baseline any adaptive design must beat
-  ([D](scenarios/D.md#results)).
+  ([D.1](scenarios/D.md#d1-impulses-and-dead-pixels-on-fine-texture)).
 * **A real reference exists:** F, one tap, calibrated on dark frames or online on the optical-black pixels, is
   cheaper and better than inferring the interference from the image (B, C).
 

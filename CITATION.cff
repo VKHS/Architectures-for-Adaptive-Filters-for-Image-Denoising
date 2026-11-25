@@ -8,9 +8,11 @@ abstract: >-
   enhancer and reference-sensor canceller). The LMS loop is analysed from its iteration bound;
   six engines (serial, folded, direct-form and systolic delayed LMS, row-block LMS and distributed
   arithmetic) are derived, with the stability conditions of delayed and block LMS on images, a
-  stall-free fixed-point weight accumulator, streaming front ends with reflected borders, and
-  Verilog RTL that reproduces bit-accurate models word for word. Yosys resource counts and six
-  application examples complete it.
+  stall-free fixed-point weight accumulator and streaming front ends with reflected borders. Every
+  scenario is explained as an algorithm, with derivations and illustrated figures, and implemented
+  twice, in Verilog RTL and in HLS C++ for Vitis HLS; both reproduce bit-accurate models word for
+  word on regression and smoke tests and on eighteen application examples. Yosys resource counts
+  complete it.
 authors:
   - family-names: "Khalili Sadaghiani"
     given-names: "Abdolvahab"
@@ -31,6 +33,8 @@ keywords:
   - image denoising
   - fixed-point arithmetic
   - Verilog
+  - high-level synthesis
+  - HLS C++
 references:
   - type: software
     title: "Adaptive Filters for Image Denoising"

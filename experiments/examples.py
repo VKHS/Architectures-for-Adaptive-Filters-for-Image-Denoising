@@ -1,185 +1,111 @@
-"""The six application examples, run through the bit-accurate models of the hardware.
+"""The eighteen application examples, three per scenario, run through the bit-accurate models of the hardware.
 
-    python experiments/examples.py           # compute (about 3 minutes) and plot
-    python experiments/examples.py --plot
+    python experiments/examples.py              # compute every example (about 15 minutes) and plot
+    python experiments/examples.py A.2 C        # recompute some examples (or a scenario), keep the others
+    python experiments/examples.py --plot       # plot from results/examples.csv and the image archive
 
-For every example: the corrupted image, the floating-point algorithm, and the fixed-point pipeline of the RTL
-top with several engines. Within an algorithmic class the engines give identical images (exact LMS: serial and
-folded; block LMS: row-block and DA); the delayed engines differ from exact LMS by the adaptation delay only.
-The block engines take the largest power-of-two step with mu N lambda_max,row <= 1 (half of their stability
-bound, docs/01-foundations.md section 1.4).
-Writes results/examples.csv, figures/examples/example_*.png and the images used by the figures
-(results/examples_images.npz, 20 MB, not kept under version control; --plot recomputes it when it is missing).
+For every example (experiments/example_defs.py): the corrupted image, the floating-point algorithm, baselines
+where they apply, and the fixed-point pipeline of the scenario top with several engines. Within an algorithmic
+class the engines give identical images (exact LMS: serial and folded; block LMS: row-block and DA); the delayed
+engines differ from exact LMS by the adaptation delay only. The block engines take the largest power-of-two step
+with mu N lambda_max,row <= 1 (half of their stability bound, docs/01-foundations.md section 1.4).
+experiments/examples_hw.py runs the same configurations through the RTL and HLS tops.
+
+Writes results/examples.csv, figures/examples/example_<X>_<k>.png (one per example), figures/examples/
+examples_<scenario>.png (the three examples of a scenario), figures/examples/overview.png, and the images of the
+figures (results/examples_images.npz, about 60 MB, not under version control; --plot recomputes it if missing).
 """
 import sys
 
 import numpy as np
 
 from common import write_csv, read_csv, save, Timer, RESULTS
-from afarch import scenarios as sc, scenes, reference as ref, lattice, frontends as fe
-from afarch.cost import worst_row_lambda, block_step
-from afarch.fxp import step_exponent
-from numpy.lib.stride_tricks import sliding_window_view
-from scipy.ndimage import gaussian_filter1d
+from example_defs import build, run, score, select
 
-ROWS = []
-IMGS = {}
+IMAGES = RESULTS / "examples_images.npz"
 
 
-def rec(ex, method, cls, ref_img, est, aligned=False, key=None):
-    p = ref.offset_aligned_psnr(ref_img, est) if aligned else ref.psnr(ref_img, est)
-    q = ref.ssim(ref_img, est - (np.mean(est - ref_img) if aligned else 0))
-    ROWS.append(dict(example=ex, method=method, cls=cls, psnr=round(p, 3), ssim=round(q, 4), key=key or ""))
-    if key:
-        IMGS[key] = est.astype(np.float32)
-    print(ROWS[-1], flush=True)
-    return p
+def compute(sel):
+    exs = build()
+    sel = select(list(exs), sel)
+    rows = [r for r in (read_csv("examples.csv") if (RESULTS / "examples.csv").exists() and sel else [])
+            if r["example"] not in sel]
+    imgs = dict(np.load(IMAGES)) if IMAGES.exists() and sel else {}
+    for eid in sel or list(exs):
+        t = Timer()
+        e = exs[eid]
+        s = e.scene()
+        x = s["clean"]
+
+        def rec(method, cls, img, key=None):
+            p, q = score(e, x, img)
+            rows.append(dict(example=eid, method=method, cls=cls, psnr=round(p, 3), ssim=round(q, 4), key=key or ""))
+            if key:
+                imgs[key] = img.astype(np.float32)
+            print(rows[-1], flush=True)
+
+        rec("corrupted", "-", s["noisy"], f"{eid}_noisy")
+        for k, (label, fn) in enumerate(e.floats):
+            rec(label, "float", fn(s), f"{eid}_float" if k == 0 else None)
+        for label, cls, fn in e.baselines:
+            rec(label, cls, fn(s))
+        for c in e.configs:
+            img, raw = run(e, s, c, "model")
+            rec(c.label, c.cls, img, f"{eid}_hw" if c.key else None)
+            if c.key and c.kind == "de" and c.kw["gated"]:
+                imgs[f"{eid}_flags"] = raw[:, 1].reshape(x.shape).astype(bool)
+            if c.key and c.kind == "b":
+                imgs[f"{eid}_track"] = (raw[:, 1].reshape(x.shape) / 4096.0).astype(np.float32)
+        print(eid, t, flush=True)
+    order = {k: i for i, k in enumerate(exs)}
+    rows.sort(key=lambda r: order[r["example"]])
+    write_csv("examples.csv", rows)
+    np.savez_compressed(IMAGES, **imgs)
 
 
-def c_tap_rows(hi, L=128, delay=8):
-    """Float tap matrices of C, row by row: x_k(j) = h(refl(j - delay - k)) as in the RTL front end."""
-    W = hi.shape[1]
-    return (sliding_window_view(np.pad(hi[r], (L - 1 + delay, 0), mode="reflect"), L)[:W][:, ::-1]
-            for r in range(hi.shape[0]))
-
-
-def compute():
-    t = Timer()
-    # A: LED flicker (multiplicative): log ROM -> notch -> exp ROM
-    s = scenes.scene_a()
-    x, y = s["clean"], s["noisy"]
-    eps = 0.02
-    f = np.exp(ref.notch_lms(np.log(np.clip(y, 0, None) + eps), s["freqs"], mu2=1e-5, passes=3)) - eps
-    rec("A", "corrupted", "-", x, y, key="A_noisy")
-    rec("A", "float (log domain)", "float", x, f, key="A_float")
-    for eng in ("serial", "folded", "df", "systolic"):
-        rec("A", f"{eng}, log domain", sc.ENGINE_CLASS_LABEL[eng], x,
-            sc.scenario_a_log(y, s["freqs"], S=17, engine=eng), key=f"A_{eng}")
-    rec("A", "serial, linear domain", "exact LMS", x, sc.scenario_a(y, s["freqs"], S=17, passes=3))
-    print("A", t, flush=True)
-    # B: probe microscopy
-    s = scenes.scene_b()
-    x, y = s["clean"], s["noisy"]
-    rec("B", "corrupted", "-", x, y, aligned=True, key="B_noisy")
-    rec("B", "float, gated", "float", x, ref.bias_canceller(y, 0.05, "gated", tau=0.08)[0], aligned=True,
-        key="B_float")
-    rec("B", "float, LMS", "float", x, ref.bias_canceller(y, 0.02, "lms")[0], aligned=True)
-    rec("B", "bias engine, gated", "bias", x, sc.scenario_b(y, S=4, mode="gated", tau=0.08)[0], aligned=True,
-        key="B_gated")
-    rec("B", "bias engine, LMS", "bias", x, sc.scenario_b(y, S=6, mode="lms")[0], aligned=True)
-    rec("B", "bias engine, sign-error", "bias", x, sc.scenario_b(y, S=4, mode="sign", sk=6)[0], aligned=True)
-    print("B", t, flush=True)
-    # C: drifting stripes
-    s = scenes.scene_c()
-    x, y = s["clean"], s["noisy"]
-    zc = y - y.mean(axis=1, keepdims=True)
-    hi = zc - gaussian_filter1d(zc, 4.0, axis=1, mode="reflect")
-    S = step_exponent(0.005, 128, hi.var())
-    Sb = block_step(worst_row_lambda(c_tap_rows(hi)), y.shape[1])      # block engines: mu N lambda_row <= 1
-    rec("C", "corrupted", "-", x, y, key="C_noisy")
-    rec("C", "float", "float", x, ref.subband_canceller(y, alpha=0.005), key="C_float")
-    for eng, SS in (("serial", S), ("folded", S), ("df", S), ("systolic", S), ("rowblock", Sb), ("da", Sb)):
-        rec("C", eng + ("" if SS == S else f" (S = {SS})"), sc.ENGINE_CLASS_LABEL[eng], x,
-            sc.scenario_c(y, S=SS, engine=eng), key=f"C_{eng}")
-    rec("C", "A4 lattice notch (float model)", "dedicated", x, lattice.notch_image(y, k1=0.9, mu=0.032)[0],
-        key="C_lattice")
-    print("C", t, flush=True)
-    # D: impulses on texture, gated predictor
-    s = scenes.scene_d()
-    x, y = s["clean"], s["noisy"]
-    z = y - np.median(y)
-    S = step_exponent(0.01, 24, np.var(np.clip(z, -0.5, 0.5)))
-    rec("D", "corrupted", "-", x, y, key="D_noisy")
-    rec("D", "float, gated", "float", x, ref.blindspot_gated(y)[0], key="D_float")
-    rec("D", "median 3x3", "baseline", x, sc.median3x3(y), key="D_median")
-    rec("D", "switching median, 0.15", "baseline", x, sc.median3x3(y, switch=True, thr=0.15))
-    for eng in ("serial", "df", "systolic"):
-        o, fl = sc.scenario_de(y, S=S, R=2, passes=3, gated=True, engine=eng)
-        rec("D", f"{eng}, gated", sc.ENGINE_CLASS_LABEL[eng], x, o, key=f"D_{eng}")
-        if eng == "serial":
-            IMGS["D_flags"] = fl
-    print("D", t, flush=True)
-    # E: brick texture under heavy noise, 11 x 11 window (120 taps)
-    s = scenes.scene_e()
-    x, y = s["clean"], s["noisy"]
-    z = y - y.mean()
-    S = step_exponent(0.01, 120, z.var())
-    XE = fe.window_taps(z, 5, 0).astype(float).reshape(y.shape[0], y.shape[1], -1)
-    Sb = block_step(worst_row_lambda(XE[r] for r in range(y.shape[0])), y.shape[1])
-    rec("E", "corrupted", "-", x, y, key="E_noisy")
-    rec("E", "float, 11 x 11", "float", x, ref.blindspot_lms(y, R=5, hole=0, alpha=0.01, passes=2), key="E_float")
-    for eng, SS in (("folded", S), ("df", S), ("systolic", S), ("rowblock", Sb)):
-        o, info = sc.scenario_de(y, S=SS, R=5, H=0, passes=2, engine=eng, record=True)
-        rec("E", eng + ("" if SS == S else f" (S = {SS})"), sc.ENGINE_CLASS_LABEL[eng], x, o, key=f"E_{eng}")
-        IMGS[f"E_{eng}_weights"] = info["weights"].astype(np.float32)
-    print("E", t, flush=True)
-    # F: astronomy, optical black + reference channel
-    s = scenes.scene_f()
-    x = s["clean"]
-    w = ref.train_row_weight(s["dark"], s["dark_ob"])
-    y1 = s["noisy"] - w * s["ob"].mean(axis=1, keepdims=True)
-    y2, _ = ref.channel_reference_canceller(y1, s["ref"], s["dark"], s["dark_ref"])
-    rec("F", "corrupted", "-", x, s["noisy"], key="F_noisy")
-    rec("F", "float, both references", "float", x, y2, key="F_float")
-    h1, _ = sc.scenario_f_row(s["noisy"], s["ob"], s["dark"], s["dark_ob"], S=1)
-    Sc = int(round(-np.log2(1e-3 / np.var(s["dark_ref"]))))
-    h2, _ = sc.scenario_f_channel(h1, s["ref"], s["dark"], s["dark_ref"], S=Sc)
-    rec("F", "OB, dark frame", "exact LMS", x, h1, key="F_ob")
-    rec("F", "OB, online", "exact LMS", x, sc.scenario_f_online(s["noisy"], s["ob"], S=-3)[0])
-    rec("F", "OB + channel", "exact LMS", x, h2, key="F_hw")
-    print("F", t, flush=True)
-    write_csv("examples.csv", ROWS)
-    np.savez_compressed(RESULTS / "examples_images.npz", **IMGS)
+# --------------------------------------------------------------------------------------------- figures
+def display(e):
+    if e.disp == "afm":
+        return lambda a: a - np.median(a) + 0.3, dict(vmin=0.1, vmax=0.75)
+    if e.disp == "page":
+        return lambda a: a - np.median(a) + 0.88, dict(vmin=0.0, vmax=1.0)
+    if e.disp == "astro":
+        return lambda a: np.arcsinh(np.clip(a - np.median(a) + 0.02, 0, None) / 0.03) / np.arcsinh(1 / 0.03), {}
+    return lambda a: a, {}
 
 
 def plot():
+    import textwrap
     import matplotlib.pyplot as plt
     from afarch.plotstyle import show_image, INK, INK2, MUTED, BLUE, ORANGE, AQUA, YELLOW, GRID, VIOLET
+    exs = build()
     rows = read_csv("examples.csv")
-    im = np.load(RESULTS / "examples_images.npz")
-    cl = {"A": scenes.scene_a, "B": scenes.scene_b, "C": scenes.scene_c, "D": scenes.scene_d, "E": scenes.scene_e,
-          "F": scenes.scene_f}
-    spec = {
-        "A": ("LED flicker in a rolling-shutter camera", "A_serial", "serial engine, log/exp ROMs",
-              (slice(0, 512), slice(0, 512)), None),
-        "B": ("line offsets and drift in a probe-microscopy scan", "B_gated", "bias engine, gated",
-              (slice(0, 512), slice(0, 512)), "afm"),
-        "C": ("vibration stripes whose frequency drifts", "C_systolic", "systolic DLMS, 256 DSP",
-              (slice(100, 356), slice(100, 356)), None),
-        "D": ("10 % impulses and dead pixels on fine texture", "D_df", "direct-form DLMS, gated",
-              (slice(150, 310), slice(180, 340)), None),
-        "E": ("periodic texture under heavy noise", "E_df", "direct-form DLMS, 120 taps",
-              (slice(160, 352), slice(160, 352)), None),
-        "F": ("row banding and readout telegraph on a faint field", "F_hw", "serial engines, OB + reference",
-              (slice(250, 442), slice(40, 232)), "astro"),
-    }
+    im = np.load(IMAGES)
     cls_col = {"exact LMS": BLUE, "delayed LMS": ORANGE, "block LMS": AQUA, "bias": BLUE, "float": INK2,
                "baseline": YELLOW, "dedicated": VIOLET, "-": MUTED}
-    for ex, (title, key, hwlab, crop, disp) in spec.items():
-        x = cl[ex]()["clean"]
-        r = [q for q in rows if q["example"] == ex]
-        pr = {q["method"]: float(q["psnr"]) for q in r}
-        fig = plt.figure(figsize=(16.5, 3.9))
-        gs = fig.add_gridspec(1, 6, width_ratios=[1, 1, 1, 1, 0.55, 1.45], wspace=0.06)
-        if disp == "afm":
-            f = lambda a: a - np.median(a) + 0.3  # noqa: E731
-            kw = dict(vmin=0.1, vmax=0.75)
-        elif disp == "astro":
-            f = lambda a: np.arcsinh(np.clip(a, 0, None) / 0.03) / np.arcsinh(1 / 0.03)  # noqa: E731
-            kw = {}
-        else:
-            f = lambda a: a  # noqa: E731
-            kw = {}
-        noisy = im[f"{ex}_noisy"]
-        fl = im[f"{ex}_float"]
-        hw = im[key]
+    hw_label = {}
+    for eid, e in exs.items():
+        r = [q for q in rows if q["example"] == eid]
+        if not r:
+            continue
+        key = [c for c in e.configs if c.key][0]
+        hw_label[eid] = key.label
+        f, kw = display(e)
+        crop = e.crop
         m_noisy = [q for q in r if q["method"] == "corrupted"][0]
         m_float = [q for q in r if q["cls"] == "float"][0]
-        m_hw = [q for q in r if q["key"] == key][0]
+        m_hw = [q for q in r if q["key"] == f"{eid}_hw"][0]
+        noisy, fl, hw = im[f"{eid}_noisy"], im[f"{eid}_float"], im[f"{eid}_hw"]
+        fig = plt.figure(figsize=(16.5, 3.9))
+        gs = fig.add_gridspec(1, 6, width_ratios=[1, 1, 1, 1, 0.8, 1.45], wspace=0.06)
+        al = ", offset aligned" if e.aligned else ""
         show_image(fig.add_subplot(gs[0]), f(noisy)[crop], f"corrupted, {float(m_noisy['psnr']):.2f} dB", **kw)
-        show_image(fig.add_subplot(gs[1]), f(fl)[crop], f"floating point, {float(m_float['psnr']):.2f} dB", **kw)
-        show_image(fig.add_subplot(gs[2]), f(hw)[crop], f"{hwlab}\n{float(m_hw['psnr']):.2f} dB", **kw)
+        show_image(fig.add_subplot(gs[1]), f(fl)[crop], f"{m_float['method']}\n{float(m_float['psnr']):.2f} dB", **kw)
+        show_image(fig.add_subplot(gs[2]), f(hw)[crop], f"{key.label} (hardware)\n{float(m_hw['psnr']):.2f} dB",
+                   **kw)
         d = (hw - fl)[crop]
+        if e.aligned:
+            d = d - np.mean(hw - fl)
         ax = fig.add_subplot(gs[3])
         lim = max(4 / 4096, float(np.percentile(np.abs(d), 99.5)))
         ax.imshow(d, cmap="RdBu_r", vmin=-lim, vmax=lim, interpolation="nearest")
@@ -194,25 +120,74 @@ def plot():
         vals = [float(q["psnr"]) for q in rr][::-1]
         cols = [cls_col.get(q["cls"], MUTED) for q in rr][::-1]
         y0 = np.arange(len(names))
-        base = float(m_noisy["psnr"])
+        corr = float(m_noisy["psnr"])
+        base = min(corr, min(vals)) - (1.0 if min(vals) < corr else 0.0)
         ax.barh(y0, np.array(vals) - base, left=base, color=cols, height=0.62)
         for yy, v in zip(y0, vals):
             ax.text(v + 0.1, yy, f"{v:.2f}", va="center", fontsize=7, color=INK2)
+        if base < corr:
+            ax.axvline(corr, color=MUTED, lw=0.9, ls="--")
+            ax.text(corr, -0.5, " corrupted", fontsize=6.8, color=MUTED, va="center")
         ax.set_yticks(y0)
         ax.set_yticklabels(names, fontsize=7.2)
-        ax.set_xlim(base, max(vals) + 1.2)
-        ax.set_xlabel("PSNR (dB)" + (", offset aligned" if ex == "B" else ""))
+        ax.set_xlim(base, max(vals) + 0.12 * (max(vals) - base) + 0.6)
+        ax.set_xlabel("PSNR (dB)" + al)
         ax.xaxis.grid(True, color=GRID)
         ax.set_axisbelow(True)
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
         ax.set_title("floating point and bit-accurate hardware", fontsize=8.5)
-        fig.suptitle(f"{ex}  {title}", fontsize=11, color=INK, x=0.42, y=0.98)
-        save(fig, "examples", f"example_{ex}.png")
+        fig.suptitle(f"{eid}  {e.title}", fontsize=11, color=INK, x=0.42, y=0.98)
+        save(fig, "examples", f"example_{eid.replace('.', '_')}.png")
+
+    # the three examples of every scenario: corrupted above, hardware below
+    for scen in "ABCDEF":
+        ids = [k for k in exs if k[0] == scen and f"{k}_hw" in im.files]
+        if not ids:
+            continue
+        fig, axs = plt.subplots(2, len(ids), figsize=(4.1 * len(ids), 8.4), squeeze=False)
+        for k, eid in enumerate(ids):
+            e = exs[eid]
+            f, kw = display(e)
+            r = {q["key"]: q for q in rows if q["example"] == eid}
+            show_image(axs[0, k], f(im[f"{eid}_noisy"])[e.crop],
+                       textwrap.fill(f"{eid}  {e.title}", 44) +
+                       f"\ncorrupted, {float(r[f'{eid}_noisy']['psnr']):.2f} dB", **kw)
+            show_image(axs[1, k], f(im[f"{eid}_hw"])[e.crop],
+                       f"{hw_label[eid]} (hardware), {float(r[f'{eid}_hw']['psnr']):.2f} dB", **kw)
+        fig.subplots_adjust(wspace=0.04, hspace=0.2)
+        save(fig, "examples", f"examples_{scen}.png")
+
+    # overview: the first example of every scenario
+    names = {"A": "A  adaptive notch", "B": "B  bias canceller", "C": "C  canceller, no reference",
+             "D": "D  blind-spot predictor", "E": "E  line enhancer", "F": "F  reference sensor"}
+    pick = {k: f"{k}.1" for k in "ABCDEF"}
+    if any(f"{k}_hw" not in im.files for k in pick.values()):
+        return
+    fig, axs = plt.subplots(2, 6, figsize=(19.5, 7.6))
+    for k, scen in enumerate("ABCDEF"):
+        eid = pick[scen]
+        e = exs[eid]
+        f, kw = display(e)
+        r = {q["key"]: q for q in rows if q["example"] == eid}
+        c0, c1 = e.crop
+        sq = min((c0.stop or 512) - (c0.start or 0), (c1.stop or 512) - (c1.start or 0), 256)
+        crop = (slice(c0.start or 0, (c0.start or 0) + sq), slice(c1.start or 0, (c1.start or 0) + sq))
+        title = textwrap.fill(f"{eid} {e.title}", 34)
+        if title.count("\n") == 0:
+            title += "\n"
+        axs[0, k].text(0.5, 1.18, names[scen], transform=axs[0, k].transAxes, ha="center", va="bottom", fontsize=10,
+                       fontweight="bold", color=INK)
+        show_image(axs[0, k], f(im[f"{eid}_noisy"])[crop],
+                   f"{title}\ncorrupted, {float(r[f'{eid}_noisy']['psnr']):.1f} dB", **kw)
+        show_image(axs[1, k], f(im[f"{eid}_hw"])[crop],
+                   f"{hw_label[eid]} (hardware)\n{float(r[f'{eid}_hw']['psnr']):.1f} dB", **kw)
+    fig.subplots_adjust(wspace=0.05, hspace=0.14)
+    save(fig, "examples", "overview.png")
 
 
 if __name__ == "__main__":
-    if "--plot" not in sys.argv or not (RESULTS / "examples.csv").exists() or \
-            not (RESULTS / "examples_images.npz").exists():
-        compute()
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if "--plot" not in sys.argv or not (RESULTS / "examples.csv").exists() or not IMAGES.exists():
+        compute(args)
     plot()

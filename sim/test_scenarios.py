@@ -86,8 +86,8 @@ def case_c(name, engine, *, L=16, DELAY=6, S=6, P=2, h=6, w=64, seed=0):
     x = crop("chelsea", h, w)
     j = np.arange(w)[None, :]
     i = np.arange(h)[:, None]
-    y = x + 0.12 * np.cos(2 * np.pi * (0.1 * j + 0.03 * i) + 0.4)
-    codes = np.clip(ar.code(y), 0, None)
+    y = x - np.median(x) + 0.12 * np.cos(2 * np.pi * (0.1 * j + 0.03 * i) + 0.4)    # signed codes, about half < 0
+    codes = ar.code(y)
     yq = codes / 4096.0
     drain_row = sc.default_drain(engine, L)
     exp_pix = ar.code(sc.scenario_c(yq, S=S, L=L, delay=DELAY, engine=engine)).ravel()

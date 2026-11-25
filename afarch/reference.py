@@ -180,14 +180,16 @@ def blindspot_lms(img, R=2, hole=0, alpha=0.01, mu2=None, passes=2):
     return y + m
 
 
-def blindspot_gated(img, R=2, alpha=0.01, k=4.0, passes=3, t_min=0.1):
-    """D gated: replace only pixels whose prediction error exceeds max(k s, t_min)."""
+def blindspot_gated(img, R=2, alpha=0.01, k=4.0, passes=3, t_min=0.1, mu2=None, rate=0.01, scale=1.4826):
+    """D gated: replace only pixels whose prediction error exceeds max(k s, t_min); s follows scale * |e| of the
+    clean pixels at the given rate. The hardware's gate uses rate 2^-7 and scale 1.5 (afarch.engines.Gate)."""
     H, W = img.shape
     m = float(np.median(img))
     z = img - m
     mflat = _mask(R, 0)
     nt = int(mflat.sum())
-    mu2 = alpha / (nt * float(np.var(np.clip(z, -0.5, 0.5))))
+    if mu2 is None:
+        mu2 = alpha / (nt * float(np.var(np.clip(z, -0.5, 0.5))))
     w = np.full(nt, 1.0 / nt)
     src = z.copy()
     out = z.copy()
@@ -209,7 +211,7 @@ def blindspot_gated(img, R=2, alpha=0.01, k=4.0, passes=3, t_min=0.1):
                     out[r, c] = d[c]
                     flags[r, c] = False
                     w += (mu2 * e) * X[c]
-                    s += 0.01 * (1.4826 * ae - s)
+                    s += rate * (scale * ae - s)
         src = out.copy()
     return out + m, flags
 

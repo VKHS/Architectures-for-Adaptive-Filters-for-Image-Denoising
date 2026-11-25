@@ -37,8 +37,9 @@ def scene_b():
     H, W = s.shape
     j = np.arange(W)[None, :]
     wander = (0.05 + 0.03 * rng.random((H, 1))) * np.sin(2 * np.pi * 0.8 * j / W + 2 * np.pi * rng.random((H, 1)))
-    y = s + 0.05 * rng.standard_normal((H, 1)) + wander + 0.1 * j / W + 0.01 * rng.standard_normal(s.shape)
-    return dict(clean=s, noisy=y)
+    offset = 0.05 * rng.standard_normal((H, 1))
+    y = s + offset + wander + 0.1 * j / W + 0.01 * rng.standard_normal(s.shape)
+    return dict(clean=s, noisy=y, bias=offset + wander + 0.1 * j / W)
 
 
 def scene_c():

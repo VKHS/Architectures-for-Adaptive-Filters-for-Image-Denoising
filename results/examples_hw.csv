@@ -1,0 +1,101 @@
+example,config,cls,impl,region,words,match,psnr_model,psnr_impl,seconds_model,seconds_impl,ap_int
+A.1,"serial, log domain",exact LMS,HLS C++,full frame 512 x 512,262144,True,35.327,35.327,7.5,0.7,False
+A.1,"serial, log domain",exact LMS,RTL,full frame 512 x 512,262144,True,35.327,35.327,7.3,65.1,
+A.1,"folded, log domain",exact LMS,HLS C++,full frame 512 x 512,262144,True,35.327,35.327,7.4,0.7,False
+A.1,"df, log domain",delayed LMS,HLS C++,full frame 512 x 512,262144,True,35.331,35.331,7.4,0.7,False
+A.1,"df, log domain",delayed LMS,RTL,full frame 512 x 512,262144,True,35.331,35.331,7.2,34.0,
+A.1,"systolic, log domain",delayed LMS,HLS C++,full frame 512 x 512,262144,True,35.332,35.332,7.4,0.8,False
+A.1,"serial, linear domain",exact LMS,HLS C++,full frame 512 x 512,262144,True,27.601,27.601,7.4,0.8,False
+A.2,serial,exact LMS,HLS C++,full frame 512 x 512,262144,True,47.254,47.254,5.1,0.7,False
+A.2,serial,exact LMS,RTL,full frame 512 x 512,262144,True,47.254,47.254,5.2,63.9,
+A.2,folded,exact LMS,HLS C++,full frame 512 x 512,262144,True,47.254,47.254,5.3,0.7,False
+A.2,df,delayed LMS,HLS C++,full frame 512 x 512,262144,True,47.253,47.253,4.9,0.7,False
+A.2,df,delayed LMS,RTL,full frame 512 x 512,262144,True,47.253,47.253,4.8,51.5,
+A.2,systolic,delayed LMS,HLS C++,full frame 512 x 512,262144,True,47.243,47.243,5.1,0.7,False
+A.3,serial,exact LMS,HLS C++,full frame 512 x 512,262144,True,47.548,47.548,5.0,0.7,False
+A.3,serial,exact LMS,RTL,full frame 512 x 512,262144,True,47.548,47.548,4.9,46.1,
+A.3,df,delayed LMS,HLS C++,full frame 512 x 512,262144,True,47.529,47.529,5.1,0.7,False
+A.3,df,delayed LMS,RTL,full frame 512 x 512,262144,True,47.529,47.529,5.2,28.8,
+A.3,systolic,delayed LMS,HLS C++,full frame 512 x 512,262144,True,47.522,47.522,5.1,0.7,False
+B.1,"bias engine, gated",bias,HLS C++,full frame 512 x 512,262144,True,34.778,34.778,0.2,0.8,False
+B.1,"bias engine, gated",bias,RTL,full frame 512 x 512,262144,True,34.778,34.778,0.2,2.8,
+B.1,"bias engine, LMS",bias,HLS C++,full frame 512 x 512,262144,True,28.517,28.517,0.1,0.7,False
+B.1,"bias engine, LMS",bias,RTL,full frame 512 x 512,262144,True,28.517,28.517,0.1,2.5,
+B.1,"bias engine, sign-error",bias,HLS C++,full frame 512 x 512,262144,True,33.914,33.914,0.2,0.7,False
+B.1,"bias engine, sign-error",bias,RTL,full frame 512 x 512,262144,True,33.914,33.914,0.2,2.5,
+B.2,"bias engine, gated",bias,HLS C++,full frame 512 x 512,262144,True,36.652,36.652,0.2,0.7,False
+B.2,"bias engine, gated",bias,RTL,full frame 512 x 512,262144,True,36.652,36.652,0.2,2.6,
+B.2,"bias engine, sign-error",bias,HLS C++,full frame 512 x 512,262144,True,34.844,34.844,0.2,0.7,False
+B.2,"bias engine, sign-error",bias,RTL,full frame 512 x 512,262144,True,34.844,34.844,0.2,2.7,
+B.2,"bias engine, LMS",bias,HLS C++,full frame 512 x 512,262144,True,27.636,27.636,0.2,0.7,False
+B.2,"bias engine, LMS",bias,RTL,full frame 512 x 512,262144,True,27.636,27.636,0.1,2.4,
+B.3,"bias engine, gated",bias,HLS C++,full frame 512 x 512,262144,True,37.102,37.102,0.2,0.7,False
+B.3,"bias engine, gated",bias,RTL,full frame 512 x 512,262144,True,37.102,37.102,0.2,2.4,
+B.3,"bias engine, sign-error",bias,HLS C++,full frame 512 x 512,262144,True,32.29,32.29,0.2,0.7,False
+B.3,"bias engine, sign-error",bias,RTL,full frame 512 x 512,262144,True,32.29,32.29,0.2,2.7,
+B.3,"bias engine, LMS",bias,HLS C++,full frame 512 x 512,262144,True,18.752,18.752,0.2,0.8,False
+B.3,"bias engine, LMS",bias,RTL,full frame 512 x 512,262144,True,18.752,18.752,0.2,2.4,
+C.1,serial,exact LMS,HLS C++,full frame 512 x 512,262144,True,32.481,32.481,2.7,0.7,False
+C.1,folded,exact LMS,HLS C++,full frame 512 x 512,262144,True,32.481,32.481,2.7,0.7,False
+C.1,folded,exact LMS,RTL,rows 100-115 (512 x 16),8192,True,33.068,33.068,0.1,30.1,
+C.1,df,delayed LMS,HLS C++,full frame 512 x 512,262144,True,32.389,32.389,2.9,0.8,False
+C.1,systolic,delayed LMS,HLS C++,full frame 512 x 512,262144,True,32.327,32.327,2.9,0.9,False
+C.1,rowblock (S = 8),block LMS,HLS C++,full frame 512 x 512,262144,True,32.347,32.347,2.2,0.8,False
+C.1,da (S = 8),block LMS,HLS C++,full frame 512 x 512,262144,True,32.347,32.347,2.1,0.7,False
+C.2,serial,exact LMS,HLS C++,full frame 512 x 512,262144,True,30.553,30.553,2.6,0.7,False
+C.2,folded,exact LMS,HLS C++,full frame 512 x 512,262144,True,30.553,30.553,2.8,0.8,False
+C.2,folded,exact LMS,RTL,rows 40-55 (512 x 16),8192,True,29.59,29.59,0.1,29.4,
+C.2,df,delayed LMS,HLS C++,full frame 512 x 512,262144,True,30.494,30.494,2.8,0.7,False
+C.2,systolic,delayed LMS,HLS C++,full frame 512 x 512,262144,True,30.536,30.536,2.9,0.8,False
+C.2,rowblock (S = 8),block LMS,HLS C++,full frame 512 x 512,262144,True,30.574,30.574,2.1,0.7,False
+C.2,da (S = 8),block LMS,HLS C++,full frame 512 x 512,262144,True,30.574,30.574,2.2,0.8,False
+C.3,serial,exact LMS,HLS C++,full frame 512 x 512,262144,True,31.437,31.437,2.7,0.7,False
+C.3,folded,exact LMS,HLS C++,full frame 512 x 512,262144,True,31.437,31.437,2.6,0.7,False
+C.3,folded,exact LMS,RTL,rows 100-115 (512 x 16),8192,True,29.171,29.171,0.1,29.0,
+C.3,df,delayed LMS,HLS C++,full frame 512 x 512,262144,True,31.409,31.409,2.8,0.7,False
+C.3,systolic,delayed LMS,HLS C++,full frame 512 x 512,262144,True,31.428,31.428,2.7,0.9,False
+C.3,rowblock (S = 7),block LMS,HLS C++,full frame 512 x 512,262144,True,31.454,31.454,2.3,0.8,False
+C.3,da (S = 7),block LMS,HLS C++,full frame 512 x 512,262144,True,31.454,31.454,2.1,0.8,False
+D.1,"serial, gated",exact LMS,HLS C++,full frame 512 x 512,262144,True,30.937,30.937,8.2,0.9,False
+D.1,"serial, gated",exact LMS,RTL,"tile 128 x 128 at row 150, column 180",16384,True,30.495,30.495,0.5,54.9,
+D.1,"df, gated",delayed LMS,HLS C++,full frame 512 x 512,262144,True,30.911,30.911,8.0,1.0,False
+D.1,"df, gated",delayed LMS,RTL,"tile 128 x 128 at row 150, column 180",16384,True,30.457,30.457,0.5,127.5,
+D.1,"systolic, gated",delayed LMS,HLS C++,full frame 512 x 512,262144,True,30.871,30.871,8.0,1.1,False
+D.2,serial,exact LMS,HLS C++,full frame 512 x 512,262144,True,27.145,27.145,5.1,0.9,False
+D.2,serial,exact LMS,RTL,"tile 128 x 128 at row 60, column 140",16384,True,26.51,26.51,0.3,36.7,
+D.2,df,delayed LMS,HLS C++,full frame 512 x 512,262144,True,27.142,27.142,5.1,1.0,False
+D.2,df,delayed LMS,RTL,"tile 128 x 128 at row 60, column 140",16384,True,26.49,26.49,0.3,86.1,
+D.2,systolic,delayed LMS,HLS C++,full frame 512 x 512,262144,True,27.124,27.124,5.3,1.1,False
+D.2,rowblock (S = 11),block LMS,HLS C++,full frame 512 x 512,262144,True,27.082,27.082,4.2,1.4,False
+D.3,"serial, gated",exact LMS,HLS C++,full frame 512 x 512,262144,True,32.41,32.41,7.9,0.9,False
+D.3,"serial, gated",exact LMS,RTL,"tile 128 x 128 at row 100, column 150",16384,True,18.843,18.843,0.5,52.2,
+D.3,"df, gated",delayed LMS,HLS C++,full frame 512 x 512,262144,True,32.101,32.101,7.5,0.9,False
+D.3,"systolic, gated",delayed LMS,HLS C++,full frame 512 x 512,262144,True,32.523,32.523,7.9,1.0,False
+E.1,folded,exact LMS,HLS C++,full frame 512 x 512,262144,True,29.752,29.752,5.5,0.9,False
+E.1,folded,exact LMS,RTL,"tile 96 x 96 at row 160, column 160",9216,True,29.528,29.528,0.2,1422.5,
+E.1,df,delayed LMS,HLS C++,full frame 512 x 512,262144,True,29.709,29.709,5.6,1.2,False
+E.1,systolic,delayed LMS,HLS C++,full frame 512 x 512,262144,True,29.642,29.642,5.8,2.1,False
+E.1,rowblock (S = 9),block LMS,HLS C++,full frame 512 x 512,262144,True,29.81,29.81,4.3,1.0,False
+E.2,folded,exact LMS,HLS C++,full frame 192 x 192,36864,True,25.343,25.343,0.8,0.8,False
+E.2,folded,exact LMS,RTL,"tile 96 x 96 at row 48, column 48",9216,True,25.123,25.123,0.2,439.1,
+E.2,df,delayed LMS,HLS C++,full frame 192 x 192,36864,True,25.34,25.34,0.7,0.7,False
+E.2,systolic,delayed LMS,HLS C++,full frame 192 x 192,36864,True,25.308,25.308,0.7,0.7,False
+E.2,rowblock (S = 8),block LMS,HLS C++,full frame 192 x 192,36864,True,24.847,24.847,0.6,0.6,False
+E.3,"df, blind spot 3 x 3",delayed LMS,HLS C++,full frame 512 x 512,262144,True,25.922,25.922,5.5,0.9,False
+E.3,"df, blind spot 3 x 3",delayed LMS,RTL,"tile 96 x 96 at row 160, column 160",9216,True,25.731,25.731,0.2,235.9,
+E.3,"systolic, blind spot 3 x 3",delayed LMS,HLS C++,full frame 512 x 512,262144,True,25.831,25.831,5.1,1.0,False
+E.3,"rowblock, blind spot 3 x 3 (S = 9)",block LMS,HLS C++,full frame 512 x 512,262144,True,26.014,26.014,4.1,0.9,False
+E.3,"df, blind spot 1 x 1",delayed LMS,HLS C++,full frame 512 x 512,262144,True,20.638,20.638,5.4,1.0,False
+E.3,"df, blind spot 1 x 1",delayed LMS,RTL,"tile 96 x 96 at row 160, column 160",9216,True,22.997,22.997,0.2,353.2,
+F.1,"OB, dark frame",exact LMS,HLS C++,full frame 512 x 512,262144,True,30.2,30.2,9.3,1.4,False
+F.1,"OB, dark frame",exact LMS,RTL,full frame 512 x 512,262144,True,30.2,30.2,9.6,36.0,
+F.1,"OB, online",exact LMS,HLS C++,full frame 512 x 512,262144,True,30.171,30.171,1.7,0.8,False
+F.1,"OB, online",exact LMS,RTL,full frame 512 x 512,262144,True,30.171,30.171,1.7,8.0,
+F.1,OB + channel,exact LMS,HLS C++,full frame 512 x 512,524288,True,36.239,36.239,14.6,2.9,False
+F.1,OB + channel,exact LMS,RTL,full frame 512 x 512,524288,True,36.239,36.239,14.1,53.7,
+F.2,"OB, dark frame",exact LMS,HLS C++,full frame 512 x 512,262144,True,39.718,39.718,9.2,1.7,False
+F.2,"OB, dark frame",exact LMS,RTL,full frame 512 x 512,262144,True,39.718,39.718,9.7,36.8,
+F.2,"OB, online",exact LMS,HLS C++,full frame 512 x 512,262144,True,39.487,39.487,1.6,0.8,False
+F.2,"OB, online",exact LMS,RTL,full frame 512 x 512,262144,True,39.487,39.487,1.8,7.4,
+F.3,"reference channel, dark frame",exact LMS,HLS C++,full frame 512 x 512,262144,True,36.308,36.308,4.5,1.6,False
+F.3,"reference channel, dark frame",exact LMS,RTL,full frame 512 x 512,262144,True,36.308,36.308,4.0,16.7,

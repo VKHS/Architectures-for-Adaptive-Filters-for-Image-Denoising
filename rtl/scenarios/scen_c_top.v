@@ -106,7 +106,8 @@ module scen_c_top #(
     genvar gm;
     generate
         for (gm = 0; gm <= GH; gm = gm + 1) begin : gp
-            wire signed [WD:0] pre = (gm == 0) ? {hw[GH][WD-1], hw[GH]} : hw[GH-gm] + hw[GH+gm];
+            // $signed on the concatenation keeps the whole conditional signed, so the pre-adder sign-extends
+            wire signed [WD:0] pre = (gm == 0) ? $signed({hw[GH][WD-1], hw[GH]}) : hw[GH-gm] + hw[GH+gm];
             wire signed [WA-1:0] c = gcoef(gm);
             assign gprod[gm*WA +: WA] = (gm == 0) ? (c * pre + (1 <<< (GF - 1))) : c * pre;
         end

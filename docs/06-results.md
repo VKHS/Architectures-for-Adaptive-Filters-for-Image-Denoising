@@ -8,42 +8,55 @@ named in each section, and their outputs are in [`results/`](../results).
 
 ## 6.1 Application examples
 
-Six corrupted scenes, one per scenario, each run through the floating-point algorithm and through the
-fixed-point pipeline of its RTL top with several engines
-([`experiments/examples.py`](../experiments/examples.py), about 3 minutes; [`results/examples.csv`](../results/examples.csv)).
+Eighteen corrupted scenes, three per scenario, each run through the floating-point algorithm and through the
+fixed-point pipeline of its scenario top with several engines ([`experiments/examples.py`](../experiments/examples.py),
+about 15 minutes; [`results/examples.csv`](../results/examples.csv)). The scenario chapters show every example with
+its figure and its full table; every configuration is also reproduced word for word by the HLS C++ top and, for
+the configurations marked in the chapters, by the Verilog top ([5.4](05-verification.md#54-the-application-examples-through-both-implementations)).
+
+<p align="center"><img src="../figures/examples/overview.png" width="100%"></p>
 
 | | scene and corruption | corrupted | floating point | exact LMS | delayed LMS | block LMS | other |
 |---|---|---|---|---|---|---|---|
-| [A](scenarios/A.md) | LED flicker bands in a rolling-shutter photo, multiplicative | 22.39 | 35.38 | 35.33 | 35.33 ($D=5$), 35.33 ($D=7$) | | 27.60 without the log domain |
-| [B](scenarios/B.md) | line offsets and drift in a probe-microscopy scan | 22.39 | 34.63 | 34.78 (gated) | | | 33.91 sign-error, 28.52 LMS |
-| [C](scenarios/C.md) | vibration stripes with drifting frequency | 23.02 | 32.47 | 32.48 | 32.39 ($D=10$), 32.33 ($D=131$) | 32.35 | 32.66 A4 lattice (float model) |
-| [D](scenarios/D.md) | 10 % impulses and dead pixels on fine texture | 19.23 | 30.99 | 30.94 | 30.91 ($D=8$), 30.87 ($D=27$) | | 27.32 median, 30.07 switching median |
-| [E](scenarios/E.md) | periodic texture under heavy noise, 120 taps | 18.42 | 29.79 | 29.75 | 29.71 ($D=10$), 29.64 ($D=123$) | 29.81 | |
-| [F](scenarios/F.md) | row banding and readout telegraph on a faint field | 27.95 | 36.28 | 36.24 | | | 30.20 OB only, 30.17 OB online |
+| [A.1](scenarios/A.md#a1-led-flicker-in-a-rolling-shutter-camera) | LED flicker bands in a rolling-shutter photo, multiplicative | 22.39 | 35.38 | 35.33 | 35.33 ($D=5$), 35.33 ($D=7$) | | 27.60 without the log domain |
+| [A.2](scenarios/A.md#a2-three-plane-waves-on-a-photograph) | three plane waves, two vertical and one oblique | 21.44 | 47.26 | 47.25 | 47.25 ($D=6$), 47.24 ($D=9$) | | |
+| [A.3](scenarios/A.md#a3-mains-hum-in-a-raster-readout) | mains hum and its third harmonic in a raster readout | 25.36 | 47.55 | 47.55 | 47.53 ($D=5$), 47.52 ($D=7$) | | |
+| [B.1](scenarios/B.md#b1-line-offsets-and-drift-in-a-probe-microscopy-scan) | line offsets and drift in a probe-microscopy scan | 22.39 | 34.63 | 34.78 (gated) | | | 33.91 sign-error, 28.52 LMS |
+| [B.2](scenarios/B.md#b2-offsets-and-wander-of-a-ccd-readout-faint-field) | offsets and wander of a CCD readout, faint field | 26.81 | 36.65 | 36.65 (gated) | | | 34.84 sign-error, 27.64 LMS |
+| [B.3](scenarios/B.md#b3-scan-line-offsets-and-illumination-wander-on-a-page) | scan-line offsets and illumination wander on a page | 22.08 | 37.15 | 37.10 (gated) | | | 32.29 sign-error, 18.75 LMS |
+| [C.1](scenarios/C.md#c1-vibration-stripes-whose-frequency-drifts) | vibration stripes with drifting frequency | 23.02 | 32.47 | 32.48 | 32.39 ($D=10$), 32.33 ($D=131$) | 32.35 | 32.66 A4 lattice (float model) |
+| [C.2](scenarios/C.md#c2-stripes-with-a-random-phase-on-every-row) | stripes with a random phase on every row | 23.16 | 30.50 | 30.55 | 30.49 ($D=10$), 30.54 ($D=131$) | 30.57 | 28.15 A4 lattice |
+| [C.3](scenarios/C.md#c3-two-interference-tones-along-the-rows) | two interference tones along the rows | 25.36 | 31.43 | 31.44 | 31.41 ($D=10$), 31.43 ($D=131$) | 31.45 | 27.00 A4 lattice |
+| [D.1](scenarios/D.md#d1-impulses-and-dead-pixels-on-fine-texture) | 10 % impulses and dead pixels on fine texture | 19.23 | 30.99 | 30.94 | 30.91 ($D=8$), 30.87 ($D=27$) | | 27.32 median, 30.07 switching median |
+| [D.2](scenarios/D.md#d2-gaussian-noise-on-a-photograph) | Gaussian noise, $\sigma=20/255$ | 22.42 | 27.15 | 27.15 | 27.14 ($D=8$), 27.12 ($D=27$) | 27.08 | 26.95 median |
+| [D.3](scenarios/D.md#d3-salt-and-pepper-impulses) | 20 % salt-and-pepper impulses | 12.73 | 33.04 | 32.41 | 32.10 ($D=8$), 32.52 ($D=27$) | | 31.24 median, 31.92 switching median |
+| [E.1](scenarios/E.md#e1-periodic-texture-under-heavy-noise-11-x-11-window) | periodic texture under heavy noise, 120 taps | 18.42 | 29.79 | 29.75 | 29.71 ($D=10$), 29.64 ($D=123$) | 29.81 | |
+| [E.2](scenarios/E.md#e2-a-two-tone-lattice-in-white-noise-9-x-9-window) | a two-tone lattice in white noise, 80 taps | 14.41 | 25.39 | 25.34 | 25.34 ($D=10$), 25.31 ($D=83$) | 24.85 | |
+| [E.3](scenarios/E.md#e3-texture-under-correlated-noise-the-blind-spot-matters) | texture under correlated noise, blind spot $3\times3$ | 20.02 | 26.05 | | 25.92 ($D=9$), 25.83 ($D=43$) | 26.01 | 20.64 with a $1\times1$ blind spot |
+| [F.1](scenarios/F.md#f1-row-banding-and-readout-telegraph-on-a-faint-field) | row banding and readout telegraph on a faint field | 27.95 | 36.28 | 36.24 | | | 30.20 OB only, 30.17 OB online |
+| [F.2](scenarios/F.md#f2-row-banding-with-optical-black-columns) | row banding with optical-black columns | 30.42 | 39.72 | 39.72 | | | 39.49 OB online |
+| [F.3](scenarios/F.md#f3-readout-telegraph-noise-with-a-reference-output) | readout telegraph noise with a reference output | 30.00 | 36.32 | 36.31 | | | |
 
-(PSNR in dB; SSIM ([Wang et al. 2004](references.md#wang2004)) is in the csv. B is measured after aligning the mean offset. Exact LMS = `lms_serial` and `lms_folded`, which are
-bit-identical; block LMS = `lms_rowblock` and `lms_da`, likewise.)
+(PSNR in dB; SSIM ([Wang et al. 2004](references.md#wang2004)) is in the csv. B is measured after aligning the mean
+offset. Exact LMS = `lms_serial` and `lms_folded`, which are bit-identical; block LMS = `lms_rowblock` and `lms_da`,
+likewise, at the largest power-of-two step with $\mu N\lambda_{\max,\text{row}}\le1$.)
 
-Three observations hold across the six scenes:
+Three observations hold across the eighteen scenes:
 
-* **Fixed point costs at most 0.06 dB** where the comparison is like for like (A, C, D, E and F against their
-  floating-point runs). Q12 data, a Q20 weight view and the 48-bit weight accumulator are enough everywhere
-  ([chapter 2](02-fixed-point.md)).
-* **The delayed engines are within 0.15 dB of exact LMS** (from +0.005 dB in A to -0.15 dB for the systolic
-  engine in C), the loss growing with $D$ while $\mu\lambda_{\max}$ of the worst tile stays well inside the DLMS
-  bound ([1.3](01-foundations.md#images-are-not-stationary)).
-* **The block engines**, at the step their bound allows ($\mu N\lambda_{\max,\text{row}}\le1$), end 0.13 dB below
-  exact LMS at its own step in C (32.35 against 32.48 dB) and 0.06 dB above it in E (29.81 against 29.75 dB).
+* **Fixed point costs at most 0.06 dB** where the comparison is like for like, in 17 of the 18 examples. In D.3
+  the hardware is 0.6 dB below the floating-point algorithm; the floating-point algorithm with the hardware's gate
+  constants and power-of-two step comes within 0.04 dB of it, so the constants cost the 0.6 dB, not the Q12 data, the
+  Q20 weight view or the 48-bit weight accumulator ([chapter 2](02-fixed-point.md)).
+* **The delayed engines are within 0.15 dB of exact LMS** in every example but D.3 (from +0.005 dB in A.1 to
+  -0.15 dB for the systolic engine in C.1), the loss growing with $D$ while $\mu\lambda_{\max}$ of the worst tile
+  stays well inside the DLMS bound ([1.3](01-foundations.md#images-are-not-stationary)). With the gate on dense
+  impulses (D.3) they differ by -0.31 and +0.11 dB, because a different decision changes the next pass's taps.
+* **The block engines**, at the step their bound allows, end between 0.50 dB below (E.2, where 192-pixel rows give
+  them few updates) and 0.06 dB above (E.1) exact LMS at its own step.
 
-<p align="center"><img src="../figures/examples/example_A.png" width="100%"></p>
-<p align="center"><img src="../figures/examples/example_B.png" width="100%"></p>
-<p align="center"><img src="../figures/examples/example_C.png" width="100%"></p>
-<p align="center"><img src="../figures/examples/example_D.png" width="100%"></p>
-<p align="center"><img src="../figures/examples/example_E.png" width="100%"></p>
-<p align="center"><img src="../figures/examples/example_F.png" width="100%"></p>
-
-Each figure shows a crop of the corrupted image, the floating-point result, one hardware result, the difference
-between the hardware and floating-point outputs, and the PSNR of every version.
+The example figures (one per example, in the scenario chapters) show a crop of the corrupted image, the
+floating-point result, one hardware result, the difference between the hardware and floating-point outputs, and
+the PSNR of every version.
 
 ## 6.2 Row-block LMS
 

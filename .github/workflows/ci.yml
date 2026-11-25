@@ -1,4 +1,4 @@
-name: RTL verification
+name: verification
 on:
   push:
   pull_request:
@@ -23,6 +23,25 @@ jobs:
         run: python sim/test_engines.py
       - name: Scenario tops (32 cases)
         run: python sim/test_scenarios.py
+  smoke:
+    name: smoke tests, RTL and HLS C++, scenarios A-F
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install Icarus Verilog and the Python packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog g++
+          pip install -r requirements.txt
+      - name: RTL and HLS C simulation (64-bit integers)
+        run: python smoke/smoke.py
+      - name: HLS C simulation with ap_int (the open Xilinx arbitrary-precision headers)
+        run: |
+          git clone --depth 1 https://github.com/Xilinx/HLS_arbitrary_Precision_Types.git "$RUNNER_TEMP/ap_types"
+          python smoke/smoke.py --only hls --ap-types "$RUNNER_TEMP/ap_types/include"
   synthesis:
     name: Yosys synthesis smoke
     runs-on: ubuntu-24.04

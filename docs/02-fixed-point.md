@@ -98,20 +98,25 @@ $\mu=\alpha/(L\,\sigma_z^2)$; the hardware rounds $\log_2$ of that to the neares
 
 ## 2.6 Does fixed point cost anything?
 
-Each application example of the companion repository, run through the bit-accurate model of its RTL top, against
-the floating-point algorithm ([`experiments/examples.py`](../experiments/examples.py), [results](06-results.md#61-application-examples)):
+The first application example of every scenario (the examples of the companion repository), run through the
+bit-accurate model of its top, against the floating-point algorithm
+([`experiments/examples.py`](../experiments/examples.py), [results](06-results.md#61-application-examples)):
 
 | scenario | example | floating point | fixed point, exact LMS |
 |---|---|---|---|
-| A | LED flicker, log domain | 35.38 dB | 35.33 dB |
-| B | probe microscopy, gated | 34.63 dB | 34.78 dB |
-| C | drifting stripes | 32.47 dB | 32.48 dB |
-| D | impulses on texture, gated | 30.99 dB | 30.94 dB |
-| E | brick texture, 120 taps | 29.79 dB | 29.75 dB |
-| F | astronomy, both references | 36.28 dB | 36.24 dB |
+| A | A.1 LED flicker, log domain | 35.38 dB | 35.33 dB |
+| B | B.1 probe microscopy, gated | 34.63 dB | 34.78 dB |
+| C | C.1 drifting stripes | 32.47 dB | 32.48 dB |
+| D | D.1 impulses on texture, gated | 30.99 dB | 30.94 dB |
+| E | E.1 brick texture, 120 taps | 29.79 dB | 29.75 dB |
+| F | F.1 astronomy, both references | 36.28 dB | 36.24 dB |
 
 The differences are within $\pm0.15$ dB, of either sign, and they come mostly from policies, not from word
 lengths: the power-of-two step (in F the channel's step becomes 2 instead of 1.48, which alone accounts for
 0.03 of the 0.05 dB) and the start of a row in B ($b=d(0)$; the floating-point canceller started the same way
 gives 34.77 dB). Narrower data words cost little too: with the accumulator, D gives 27.143 dB with 8 data fraction
-bits and 27.145 dB with 12 ([`results/wordlength.csv`](../results/wordlength.csv)).
+bits and 27.145 dB with 12 ([`results/wordlength.csv`](../results/wordlength.csv)). Over all eighteen examples the
+differences have the same size and the same causes, with one exception: in
+[D.3](scenarios/D.md#d3-salt-and-pepper-impulses) (20 % salt and pepper) the hardware is 0.6 dB below floating
+point, and the floating-point algorithm with the hardware's gate constants and power-of-two step comes within
+0.04 dB of it: a policy again, not a word length.

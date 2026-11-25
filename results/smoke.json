@@ -1,0 +1,159 @@
+{
+ "cases": [
+  {
+   "case": "A_serial",
+   "scenario": "A",
+   "engine": "serial",
+   "pixels": 768,
+   "what": "2 plane waves, L = 4, 2 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "A_df",
+   "scenario": "A",
+   "engine": "df",
+   "pixels": 768,
+   "what": "2 plane waves, L = 4, 2 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "B_lms",
+   "scenario": "B",
+   "engine": "bias",
+   "pixels": 768,
+   "what": "lms update, S = 6",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "B_sign",
+   "scenario": "B",
+   "engine": "bias",
+   "pixels": 768,
+   "what": "sign update, S = 6",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "B_gated",
+   "scenario": "B",
+   "engine": "bias",
+   "pixels": 768,
+   "what": "gated update, S = 4",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "C_folded",
+   "scenario": "C",
+   "engine": "folded",
+   "pixels": 384,
+   "what": "L = 16, delay 6",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "C_df",
+   "scenario": "C",
+   "engine": "df",
+   "pixels": 384,
+   "what": "L = 16, delay 6",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "C_rowblock",
+   "scenario": "C",
+   "engine": "rowblock",
+   "pixels": 384,
+   "what": "L = 16, delay 6",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "D_gated_serial",
+   "scenario": "D",
+   "engine": "serial",
+   "pixels": 768,
+   "what": "5 x 5 window, blind spot 1 x 1, L = 24, gated, 3 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "D_gated_df",
+   "scenario": "D",
+   "engine": "df",
+   "pixels": 768,
+   "what": "5 x 5 window, blind spot 1 x 1, L = 24, gated, 3 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "D_systolic",
+   "scenario": "D",
+   "engine": "systolic",
+   "pixels": 768,
+   "what": "5 x 5 window, blind spot 1 x 1, L = 24, 2 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "E_systolic",
+   "scenario": "E",
+   "engine": "systolic",
+   "pixels": 768,
+   "what": "7 x 7 window, blind spot 3 x 3, L = 40, 2 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "E_rowblock",
+   "scenario": "E",
+   "engine": "rowblock",
+   "pixels": 768,
+   "what": "7 x 7 window, blind spot 3 x 3, L = 40, 2 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "E_da",
+   "scenario": "E",
+   "engine": "da",
+   "pixels": 768,
+   "what": "7 x 7 window, blind spot 1 x 1, L = 48, 2 passes",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "F_ob_cal",
+   "scenario": "F",
+   "engine": "serial",
+   "pixels": 1200,
+   "what": "OB reference, 2 dark frames then a frozen frame, S = 1",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "F_online",
+   "scenario": "F",
+   "engine": "serial",
+   "pixels": 400,
+   "what": "OB reference, online (mode 2), S = -3",
+   "rtl": "PASS",
+   "hls": "PASS"
+  },
+  {
+   "case": "F_channel",
+   "scenario": "F",
+   "engine": "serial",
+   "pixels": 800,
+   "what": "reference channel, dark frame then frozen, S = -1",
+   "rtl": "PASS",
+   "hls": "PASS"
+  }
+ ],
+ "all_pass": true,
+ "ap_types": false
+}

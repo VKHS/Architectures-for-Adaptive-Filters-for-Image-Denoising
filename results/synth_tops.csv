@@ -2,8 +2,8 @@ scenario,top,engine,DSP48E1,LUT,FF,SRL,LUTRAM,RAMB18,RAMB36,CARRY4,MUXF,seconds
 A,scen_a_top,serial,1,567,434,0,12,2,0,93,69,4.2
 A,scen_a_top,df,8,405,373,16,0,2,0,79,0,5.5
 B,scen_b_top,bias,0,146,73,0,0,0,0,19,15,3.8
-C,scen_c_top,folded P=8,32,3757,8115,58,144,2,0,349,0,16.1
-C,scen_c_top,systolic,272,6646,9836,186,96,2,0,744,0,58.5
+C,scen_c_top,folded P=8,32,3757,8115,58,144,2,0,349,0,19.5
+C,scen_c_top,systolic,272,6646,9836,186,96,2,0,744,0,60.0
 D,scen_de_top,serial,1,1158,1076,16,12,6,0,245,0,14.6
 D,scen_de_top,folded P=6,12,1920,1729,16,36,6,0,302,0,17.0
 D,scen_de_top,df,48,2152,1075,416,0,6,0,426,0,21.7

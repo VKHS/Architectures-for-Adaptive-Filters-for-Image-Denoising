@@ -1,41 +1,117 @@
 example,method,cls,psnr,ssim,key
-A,corrupted,-,22.392,0.8836,A_noisy
-A,float (log domain),float,35.382,0.9742,A_float
-A,"serial, log domain",exact LMS,35.327,0.9749,A_serial
-A,"folded, log domain",exact LMS,35.327,0.9749,A_folded
-A,"df, log domain",delayed LMS,35.331,0.9749,A_df
-A,"systolic, log domain",delayed LMS,35.332,0.9749,A_systolic
-A,"serial, linear domain",exact LMS,27.601,0.8876,
-B,corrupted,-,22.391,0.2809,B_noisy
-B,"float, gated",float,34.63,0.8417,B_float
-B,"float, LMS",float,28.44,0.7225,
-B,"bias engine, gated",bias,34.778,0.8581,B_gated
-B,"bias engine, LMS",bias,28.517,0.6708,
-B,"bias engine, sign-error",bias,33.914,0.8298,
-C,corrupted,-,23.022,0.4366,C_noisy
-C,float,float,32.472,0.9191,C_float
-C,serial,exact LMS,32.481,0.9193,C_serial
-C,folded,exact LMS,32.481,0.9193,C_folded
-C,df,delayed LMS,32.389,0.9181,C_df
-C,systolic,delayed LMS,32.327,0.917,C_systolic
-C,rowblock (S = 8),block LMS,32.347,0.9166,C_rowblock
-C,da (S = 8),block LMS,32.347,0.9166,C_da
-C,A4 lattice notch (float model),dedicated,32.656,0.9217,C_lattice
-D,corrupted,-,19.234,0.5931,D_noisy
-D,"float, gated",float,30.986,0.9438,D_float
-D,median 3x3,baseline,27.316,0.881,D_median
-D,"switching median, 0.15",baseline,30.071,0.9465,
-D,"serial, gated",exact LMS,30.937,0.9433,D_serial
-D,"df, gated",delayed LMS,30.911,0.9431,D_df
-D,"systolic, gated",delayed LMS,30.871,0.9428,D_systolic
-E,corrupted,-,18.42,0.2564,E_noisy
-E,"float, 11 x 11",float,29.789,0.7912,E_float
-E,folded,exact LMS,29.752,0.7886,E_folded
-E,df,delayed LMS,29.709,0.7871,E_df
-E,systolic,delayed LMS,29.642,0.7847,E_systolic
-E,rowblock (S = 9),block LMS,29.81,0.7953,E_rowblock
-F,corrupted,-,27.947,0.6133,F_noisy
-F,"float, both references",float,36.285,0.8973,F_float
-F,"OB, dark frame",exact LMS,30.2,0.7022,F_ob
-F,"OB, online",exact LMS,30.171,0.702,
-F,OB + channel,exact LMS,36.239,0.8966,F_hw
+A.1,corrupted,-,22.392,0.8836,A.1_noisy
+A.1,float (log domain),float,35.382,0.9742,A.1_float
+A.1,"serial, log domain",exact LMS,35.327,0.9749,A.1_hw
+A.1,"folded, log domain",exact LMS,35.327,0.9749,
+A.1,"df, log domain",delayed LMS,35.331,0.9749,
+A.1,"systolic, log domain",delayed LMS,35.332,0.9749,
+A.1,"serial, linear domain",exact LMS,27.601,0.8876,
+A.2,corrupted,-,21.436,0.3814,A.2_noisy
+A.2,float,float,47.261,0.9933,A.2_float
+A.2,serial,exact LMS,47.254,0.9933,
+A.2,folded,exact LMS,47.254,0.9933,
+A.2,df,delayed LMS,47.253,0.9933,A.2_hw
+A.2,systolic,delayed LMS,47.243,0.9933,
+A.3,corrupted,-,25.364,0.4715,A.3_noisy
+A.3,float,float,47.553,0.9924,A.3_float
+A.3,serial,exact LMS,47.548,0.9924,A.3_hw
+A.3,df,delayed LMS,47.529,0.9924,
+A.3,systolic,delayed LMS,47.522,0.9924,
+B.1,corrupted,-,22.391,0.2809,B.1_noisy
+B.1,"float, gated",float,34.63,0.8417,B.1_float
+B.1,"float, LMS",float,28.44,0.7225,
+B.1,"bias engine, gated",bias,34.778,0.8581,B.1_hw
+B.1,"bias engine, LMS",bias,28.517,0.6708,
+B.1,"bias engine, sign-error",bias,33.914,0.8298,
+B.2,corrupted,-,26.806,0.6166,B.2_noisy
+B.2,"float, gated",float,36.651,0.9418,B.2_float
+B.2,"float, sign-error",float,34.84,0.9186,
+B.2,"bias engine, gated",bias,36.652,0.9418,B.2_hw
+B.2,"bias engine, sign-error",bias,34.844,0.9185,
+B.2,"bias engine, LMS",bias,27.636,0.7928,
+B.3,corrupted,-,22.081,0.6794,B.3_noisy
+B.3,"float, gated",float,37.152,0.9552,B.3_float
+B.3,"float, LMS",float,18.591,0.7921,
+B.3,"bias engine, gated",bias,37.102,0.9545,B.3_hw
+B.3,"bias engine, sign-error",bias,32.29,0.9368,
+B.3,"bias engine, LMS",bias,18.752,0.7785,
+C.1,corrupted,-,23.022,0.4366,C.1_noisy
+C.1,float,float,32.472,0.9191,C.1_float
+C.1,A4 lattice notch (float model),dedicated,32.656,0.9217,
+C.1,serial,exact LMS,32.481,0.9193,
+C.1,folded,exact LMS,32.481,0.9193,
+C.1,df,delayed LMS,32.389,0.9181,
+C.1,systolic,delayed LMS,32.327,0.917,C.1_hw
+C.1,rowblock (S = 8),block LMS,32.347,0.9166,
+C.1,da (S = 8),block LMS,32.347,0.9166,
+C.2,corrupted,-,23.156,0.3852,C.2_noisy
+C.2,float,float,30.502,0.8451,C.2_float
+C.2,A4 lattice notch (float model),dedicated,28.154,0.7896,
+C.2,serial,exact LMS,30.553,0.8455,
+C.2,folded,exact LMS,30.553,0.8455,
+C.2,df,delayed LMS,30.494,0.8441,
+C.2,systolic,delayed LMS,30.536,0.8458,C.2_hw
+C.2,rowblock (S = 8),block LMS,30.574,0.8456,
+C.2,da (S = 8),block LMS,30.574,0.8456,
+C.3,corrupted,-,25.363,0.5133,C.3_noisy
+C.3,float,float,31.425,0.8518,C.3_float
+C.3,A4 lattice notch (float model),dedicated,27.002,0.6779,
+C.3,serial,exact LMS,31.437,0.8525,
+C.3,folded,exact LMS,31.437,0.8525,
+C.3,df,delayed LMS,31.409,0.8517,
+C.3,systolic,delayed LMS,31.428,0.8527,C.3_hw
+C.3,rowblock (S = 7),block LMS,31.454,0.8534,
+C.3,da (S = 7),block LMS,31.454,0.8534,
+D.1,corrupted,-,19.234,0.5931,D.1_noisy
+D.1,"float, gated",float,30.986,0.9438,D.1_float
+D.1,median 3x3,baseline,27.316,0.881,
+D.1,"switching median, 0.15",baseline,30.071,0.9465,
+D.1,"serial, gated",exact LMS,30.937,0.9433,
+D.1,"df, gated",delayed LMS,30.911,0.9431,D.1_hw
+D.1,"systolic, gated",delayed LMS,30.871,0.9428,
+D.2,corrupted,-,22.423,0.3579,D.2_noisy
+D.2,float,float,27.152,0.6438,D.2_float
+D.2,median 3x3,baseline,26.954,0.5805,
+D.2,serial,exact LMS,27.145,0.6437,D.2_hw
+D.2,df,delayed LMS,27.142,0.6435,
+D.2,systolic,delayed LMS,27.124,0.641,
+D.2,rowblock (S = 11),block LMS,27.082,0.6536,
+D.3,corrupted,-,12.731,0.0649,D.3_noisy
+D.3,"float, gated",float,33.038,0.9559,D.3_float
+D.3,"float, the hardware's gate constants and step",float,32.452,0.948,
+D.3,median 3x3,baseline,31.239,0.9099,
+D.3,"switching median, 0.15",baseline,31.918,0.9376,
+D.3,"serial, gated",exact LMS,32.41,0.9484,D.3_hw
+D.3,"df, gated",delayed LMS,32.101,0.9455,
+D.3,"systolic, gated",delayed LMS,32.523,0.9529,
+E.1,corrupted,-,18.42,0.2564,E.1_noisy
+E.1,"float, 11 x 11",float,29.789,0.7912,E.1_float
+E.1,folded,exact LMS,29.752,0.7886,
+E.1,df,delayed LMS,29.709,0.7871,E.1_hw
+E.1,systolic,delayed LMS,29.642,0.7847,
+E.1,rowblock (S = 9),block LMS,29.81,0.7953,
+E.2,corrupted,-,14.41,0.5005,E.2_noisy
+E.2,"float, 9 x 9",float,25.385,0.9424,E.2_float
+E.2,folded,exact LMS,25.343,0.9416,
+E.2,df,delayed LMS,25.34,0.9416,E.2_hw
+E.2,systolic,delayed LMS,25.308,0.9413,
+E.2,rowblock (S = 8),block LMS,24.847,0.9331,
+E.3,corrupted,-,20.016,0.3215,E.3_noisy
+E.3,"float, 7 x 7, blind spot 3 x 3",float,26.05,0.6302,E.3_float
+E.3,"float, 7 x 7, blind spot 1 x 1",float,20.59,0.3416,
+E.3,"df, blind spot 3 x 3",delayed LMS,25.922,0.6221,E.3_hw
+E.3,"systolic, blind spot 3 x 3",delayed LMS,25.831,0.618,
+E.3,"rowblock, blind spot 3 x 3 (S = 9)",block LMS,26.014,0.6323,
+E.3,"df, blind spot 1 x 1",delayed LMS,20.638,0.3434,
+F.1,corrupted,-,27.947,0.6133,F.1_noisy
+F.1,"float, both references",float,36.285,0.8973,F.1_float
+F.1,"OB, dark frame",exact LMS,30.2,0.7022,
+F.1,"OB, online",exact LMS,30.171,0.702,
+F.1,OB + channel,exact LMS,36.239,0.8966,F.1_hw
+F.2,corrupted,-,30.421,0.7122,F.2_noisy
+F.2,"float, dark frame",float,39.722,0.938,F.2_float
+F.2,"OB, dark frame",exact LMS,39.718,0.938,F.2_hw
+F.2,"OB, online",exact LMS,39.487,0.9367,
+F.3,corrupted,-,30.001,0.7343,F.3_noisy
+F.3,float,float,36.315,0.9058,F.3_float
+F.3,"reference channel, dark frame",exact LMS,36.308,0.9058,F.3_hw
